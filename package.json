@@ -3,12 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "react": "^16.11.0",
-    "react-dom": "^16.11.0",
-    "react-scripts": "3.2.0"
+    "@types/react": "^16.9.11",
+    "@types/react-dom": "^16.9.4",
+    "@types/socket.io-client": "^1.4.32",
+    "react": "^0.0.0-experimental-38dd17ab9",
+    "react-dom": "^0.0.0-experimental-38dd17ab9",
+    "react-scripts": "3.2.0",
+    "socket.io-client": "^2.3.0",
+    "typescript": "^3.7.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=4200 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
