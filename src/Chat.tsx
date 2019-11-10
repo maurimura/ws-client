@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import { useSocket } from "./Socket";
-import { send } from "q";
 
-const Chat: React.FC = props => {
+interface Chat {
+    viewer: number
+}
+
+const Chat: React.FC<Chat> = ({viewer}) => {
     return (
         <div className="chat">
-            <MessageList />
+            <MessageList viewer={viewer} />
             <SendMessage />
         </div>
     );
@@ -22,7 +25,7 @@ interface MessageAction {
     payload: Message;
 }
 
-const MessageList: React.FC = props => {
+const MessageList: React.FC<Chat> = ({viewer}) => {
     const [messages, setMessages] = useState<Message[]>([]);
     const socket = useSocket();
 
@@ -50,7 +53,7 @@ const MessageList: React.FC = props => {
     return (
         <ul className="message-list">
             {messages.map(({ message, id }) => (
-                <li>{`${message} from ${id}`}</li>
+                <li className={`${id === viewer ? "mine" : ''}`}>{`${message} from ${id}`}</li>
             ))}
         </ul>
     );

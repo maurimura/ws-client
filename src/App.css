@@ -13,16 +13,25 @@
 
 .message-list {
   border: 1px solid red;
+  list-style: none;
 }
 
 .chat {
+  display: flex;
+  flex-direction: column;
   align-self: flex-end;
+  flex: 1;
 }
 
-.send-message{
+.send-message {
   display: flex;
 }
 
-.send-message-input{
+.send-message-input {
   flex: 1;
+}
+
+.mine {
+  background-color: #afafaf;
+  text-align: end;
 }

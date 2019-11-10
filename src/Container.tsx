@@ -46,7 +46,7 @@ const Container: React.FC = (props) => {
     return (
         <div className="App">
             <header>Header</header>
-            <section className="container"><ClientList /><Chat /></section>
+            <section className="container"><ClientList /><Chat viewer={id}/></section>
             <footer>Footer</footer>
         </div>
     );
