@@ -1,5 +1,5 @@
 import React from "react";
-import "./App.css";
+import "./App.scss";
 import ClientList from "./ClientList";
 import Chat from "./Chat";
 
@@ -21,22 +21,12 @@ const Container: React.FC = props => {
     useSocket(handler);
 
     return (
-        <div className="App">
-            <header>Header</header>
-            <Main />
-            <footer>Footer</footer>
-        </div>
-    );
-};
-
-const Main: React.FC = props => {
-    return (
-        <section className="container">
-            <MessagesStore>
-                <ClientList />
-                <Chat />
-            </MessagesStore>
-        </section>
+            <section className="container">
+                <MessagesStore>
+                    <ClientList />
+                    <Chat />
+                </MessagesStore>
+            </section>
     );
 };
 

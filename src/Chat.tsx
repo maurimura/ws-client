@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./App.css";
+import "./App.scss";
 import { useSocket } from "./Socket";
 import { useMessageStore } from "./MessageStore";
 import { useSession } from "./Session";
@@ -11,6 +11,7 @@ interface MessagesStore {
 const Chat: React.FC = props => {
     return (
         <div className="chat">
+            <Header />
             <MessageList />
             <SendMessage />
         </div>
@@ -32,6 +33,15 @@ const MessageList: React.FC = props => {
                 <li key={`${message}-${id}`} className={`${id === me ? "mine" : ""}`}>{`${message} from ${id}`}</li>
             ))}
         </ul>
+    );
+};
+
+const Header: React.FC = props => {
+    const { channel } = useSession();
+    return (
+        <header className="chat-header">
+            <h1>{channel}</h1>
+        </header>
     );
 };
 

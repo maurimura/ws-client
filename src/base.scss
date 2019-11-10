@@ -1,0 +1,71 @@
+$s-s: 0.5em;
+$s-m: 1em;
+$s-l: 2em;
+
+@mixin flex {
+  display: flex; 
+}
+
+@mixin flex-1 {
+  flex: 1;
+}
+
+@mixin flex-2 {
+  flex: 2;
+}
+
+@mixin flex-3 {
+  flex: 3;
+}
+
+@mixin flex-4 {
+  flex: 4;
+}
+
+@mixin column {
+  flex-direction: column;
+}
+
+@mixin h-100 {
+  height: 100%;
+}
+
+@mixin h-100vh {
+  height: 100vh;
+}
+
+@mixin h-auto {
+  height: 100vh;
+}
+
+@mixin w-100 {
+  width: 100%;
+}
+
+@mixin w-100vw {
+  width: 100vw;
+}
+
+@mixin w-auto {
+  width: 100vh;
+}
+
+@mixin ps {
+  padding: $s-s;
+}
+@mixin pm {
+  padding: $s-m;
+}
+@mixin pl {
+  padding: $s-l;
+}
+
+@mixin ms {
+  margin: $s-s;
+}
+@mixin mm {
+  margin: $s-m;
+}
+@mixin ml {
+  margin: $s-l;
+}

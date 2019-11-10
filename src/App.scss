@@ -1,0 +1,236 @@
+// Doing this beacuase @use base didn't work :(
+$s-s: 0.5em;
+$s-m: 1em;
+$s-l: 2em;
+
+@mixin flex {
+  display: flex; 
+}
+
+@mixin flex-($value) {
+  flex: $value
+}
+
+@mixin column {
+  flex-direction: column;
+}
+
+@mixin h-100 {
+  height: 100%;
+}
+
+@mixin h-100vh {
+  height: 100vh;
+}
+
+@mixin h-auto {
+  height: 100vh;
+}
+
+@mixin w-100 {
+  width: 100%;
+}
+
+@mixin w-100vw {
+  width: 100vw;
+}
+
+@mixin w-auto {
+  width: 100vh;
+}
+
+@mixin ps {
+  padding: $s-s;
+}
+
+@mixin pm {
+  padding: $s-m;
+}
+
+@mixin pl {
+  padding: $s-l;
+}
+
+@mixin pts {
+  padding-top: $s-s;
+}
+
+@mixin ptm {
+  padding-top: $s-m;
+}
+
+@mixin ptl {
+  padding-top: $s-l;
+}
+
+@mixin pbs {
+  padding-left: $s-s;
+}
+
+@mixin pbm {
+  padding-bottom: $s-m;
+}
+
+@mixin pbl {
+  padding-bottom: $s-l;
+}
+
+@mixin pls {
+  padding-left: $s-s;
+}
+
+@mixin plm {
+  padding-left: $s-m;
+}
+
+@mixin pll {
+  padding-left: $s-l;
+}
+
+@mixin prs {
+  padding-right: $s-s;
+}
+
+@mixin prm {
+  padding-right: $s-m;
+}
+
+@mixin prl {
+  padding-right: $s-l;
+}
+
+
+@mixin ms {
+  margin: $s-s;
+}
+@mixin mm {
+  margin: $s-m;
+}
+@mixin ml {
+  margin: $s-l;
+}
+
+@mixin mts {
+  margin-top: $s-s;
+}
+
+@mixin mtm {
+  margin-top: $s-m;
+}
+
+@mixin mtl {
+  margin-top: $s-l;
+}
+
+@mixin mbs {
+  margin-left: $s-s;
+}
+
+@mixin mbm {
+  margin-bottom: $s-m;
+}
+
+@mixin mbl {
+  margin-bottom: $s-l;
+}
+
+@mixin mls {
+  margin-left: $s-s;
+}
+
+@mixin mlm {
+  margin-left: $s-m;
+}
+
+@mixin mll {
+  margin-left: $s-l;
+}
+
+@mixin mrs {
+  margin-right: $s-s;
+}
+
+@mixin mrm {
+  margin-right: $s-m;
+}
+
+@mixin mrl {
+  margin-right: $s-l;
+}
+
+@mixin justify-content($value) {
+  justify-content: $value;
+}
+
+@mixin text-align($value) {
+  text-align: $value;
+}
+
+@mixin font-weight($value) {
+  font-weight: $value;
+}
+
+@mixin line($color){
+  border-bottom: 1px solid $color;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+// Styles
+
+.container {
+  @include flex;
+  @include h-100vh;
+  @include w-100vw;
+}
+
+.message-list {
+  @include flex;
+  @include column;
+  @include justify-content(flex-end);
+  @include flex-(1);
+}
+
+.chat {
+  @include flex;
+  @include column;
+  @include flex-(5);
+
+}
+
+.send-message {
+  @include flex;
+}
+
+.send-message-input {
+  @include flex-(1);
+
+}
+
+.mine {
+  background-color: #afafaf;
+  @include text-align(end);
+}
+
+.bold {
+  @include font-weight(bold);
+}
+
+.client-list {
+  background-color: #6a6a6a;
+  @include flex-(1);
+  @include text-align(center);
+  @include ptm;
+}
+
+.client-item {
+  @include ps;
+}
+
+.chat-header {
+  @include line(black)
+}

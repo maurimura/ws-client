@@ -3,7 +3,7 @@ import { useSocket } from "./Socket";
 import { useMessageStore } from "./MessageStore";
 import { useSession } from "./Session";
 
-import "./App.css";
+import "./App.scss";
 
 const initialState = {
     list: [],
@@ -47,19 +47,13 @@ const ClientList: React.FC = props => {
     };
 
     return (
-        <div>
-            {state.list.length > 0 && (
-                <>
-                    <p>Client list:</p>
-                    <ul>
-                        {state.list.map((client: string) => {
-                            const count = getMsgCountByClient(client);
-                            return <ClientItem key={`${client}-${count}`} client={client} viewHandler={viewHandler} count={count} />;
-                        })}
-                    </ul>
-                </>
-            )}
-        </div>
+        <ul className="client-list">
+            {state.list.length > 0 &&
+                state.list.map((client: string) => {
+                    const count = getMsgCountByClient(client);
+                    return <ClientItem key={`${client}-${count}`} client={client} viewHandler={viewHandler} count={count} />;
+                })}
+        </ul>
     );
 };
 
@@ -72,7 +66,7 @@ interface ClientItem {
 const ClientItem: React.FC<ClientItem> = ({ client, viewHandler, count }) => {
     const [visited, setVisited] = useState(false);
     const { channel } = useSession();
-    
+
     const handleClick = () => {
         setVisited(true);
         viewHandler(client);
@@ -81,7 +75,7 @@ const ClientItem: React.FC<ClientItem> = ({ client, viewHandler, count }) => {
     const className = count > 0 && client !== channel && !visited ? "bold" : "";
 
     return (
-        <li onClick={handleClick} key={client} className={className}>
+        <li onClick={handleClick} key={client} className={`${className} client-item`}>
             {client}
         </li>
     );

@@ -22,8 +22,8 @@ type Context = [MessagesStore, React.Dispatch<React.SetStateAction<MessagesStore
 
 const MessagesStore: React.FC = ({ children }) => {
     const context = useState<MessagesStore>({ all: [] });
-    const [, setMessages] = context as Context;
-
+    const [messages, setMessages] = context as Context;
+    
     const handler = ({ type, payload: { channel = "all", ...message } }: MessageAction) => {
         switch (type) {
             case "NEW":
