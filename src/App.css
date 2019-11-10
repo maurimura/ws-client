@@ -35,3 +35,7 @@
   background-color: #afafaf;
   text-align: end;
 }
+
+.bold {
+  font-weight: bold;
+}

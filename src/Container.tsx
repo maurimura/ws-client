@@ -1,54 +1,42 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import "./App.css";
-import ClientList from './ClientList'
-import Chat from './Chat'
+import ClientList from "./ClientList";
+import Chat from "./Chat";
 
-import {useSocket} from './Socket'
+import { useSocket } from "./Socket";
+import MessagesStore, { MessageAction } from "./MessageStore";
+import { useSession } from "./Session";
 
-
-interface Message {
-    message: string;
-    id: number;
-}
-
-interface MessageAction {
-    type: string;
-    payload: Message;
-}
-
-const Container: React.FC = (props) => {
-    const [id, setId] = useState(0)
-    const socket = useSocket()
-
-    const handler = ({type, payload}: MessageAction) => {
+const Container: React.FC = props => {
+    const { setMe } = useSession();
+    const handler = ({ type, payload }: MessageAction) => {
         switch (type) {
             case "WELCOME":
-                return setId(payload.id)
-        
+                return setMe(payload.id);
+
             default:
                 break;
         }
-        
-    }
-    
-    
-    useEffect( () => {
-        socket.onmessage = (e) => {
-            try {
-                handler(JSON.parse(e.data))
-            } catch (error) {
-                console.error(error)
-            }   
-        }
-    }, [socket])
-    
-    
+    };
+    useSocket(handler);
+
     return (
         <div className="App">
             <header>Header</header>
-            <section className="container"><ClientList /><Chat viewer={id}/></section>
+            <Main />
             <footer>Footer</footer>
         </div>
+    );
+};
+
+const Main: React.FC = props => {
+    return (
+        <section className="container">
+            <MessagesStore>
+                <ClientList />
+                <Chat />
+            </MessagesStore>
+        </section>
     );
 };
 

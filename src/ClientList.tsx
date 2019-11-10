@@ -1,5 +1,9 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useState, useReducer } from "react";
 import { useSocket } from "./Socket";
+import { useMessageStore } from "./MessageStore";
+import { useSession } from "./Session";
+
+import "./App.css";
 
 const initialState = {
     list: [],
@@ -11,7 +15,7 @@ const reducer = (state = initialState, action: any) => {
             return { ...state, list: action.payload.clients };
 
         case "ADD": {
-            return { ...state, list: [...state.list, action.payload.data] };
+            return { ...state, list: [...state.list, action.payload] };
         }
 
         case "DEL": {
@@ -21,27 +25,26 @@ const reducer = (state = initialState, action: any) => {
 
         default:
             return state;
-            break;
     }
 };
 
 const ClientList: React.FC = props => {
     const [state, dispatch] = useReducer(reducer, initialState);
-    const socket = useSocket();
-    
-    const handler = (event: any) => {
-        
-        try {
-            dispatch(JSON.parse(event.data));
-        } catch (error) {
-            console.error(error);
-            console.log(event.data);
-        }
+    const handler = (message: any) => {
+        dispatch(message);
     };
-    useEffect(() => {
-        socket.addEventListener("message", handler);
+    useSocket(handler);
 
-    }, [socket]);
+    const message = useMessageStore();
+    const { setChannel } = useSession();
+
+    const viewHandler = (newClient: string) => {
+        setChannel((curretnClient: string) => (newClient === curretnClient ? "all" : newClient));
+    };
+
+    const getMsgCountByClient = (client: string) => {
+        return message[client] ? message[client].length : 0;
+    };
 
     return (
         <div>
@@ -49,13 +52,38 @@ const ClientList: React.FC = props => {
                 <>
                     <p>Client list:</p>
                     <ul>
-                        {state.list.map((client: string) => (
-                            <li key={client}>{client}</li>
-                        ))}
+                        {state.list.map((client: string) => {
+                            const count = getMsgCountByClient(client);
+                            return <ClientItem key={`${client}-${count}`} client={client} viewHandler={viewHandler} count={count} />;
+                        })}
                     </ul>
                 </>
             )}
         </div>
+    );
+};
+
+interface ClientItem {
+    client: string;
+    viewHandler: (client: string) => void;
+    count: number;
+}
+
+const ClientItem: React.FC<ClientItem> = ({ client, viewHandler, count }) => {
+    const [visited, setVisited] = useState(false);
+    const { channel } = useSession();
+    
+    const handleClick = () => {
+        setVisited(true);
+        viewHandler(client);
+    };
+
+    const className = count > 0 && client !== channel && !visited ? "bold" : "";
+
+    return (
+        <li onClick={handleClick} key={client} className={className}>
+            {client}
+        </li>
     );
 };
 

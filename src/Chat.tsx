@@ -1,59 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./App.css";
 import { useSocket } from "./Socket";
+import { useMessageStore } from "./MessageStore";
+import { useSession } from "./Session";
 
-interface Chat {
-    viewer: number
+interface MessagesStore {
+    [view: string]: Omit<Message, "channel">[];
 }
 
-const Chat: React.FC<Chat> = ({viewer}) => {
+const Chat: React.FC = props => {
     return (
         <div className="chat">
-            <MessageList viewer={viewer} />
+            <MessageList />
             <SendMessage />
         </div>
     );
 };
 
 interface Message {
+    channel: string;
     message: string;
-    id: number;
+    id: string;
 }
 
-interface MessageAction {
-    type: string;
-    payload: Message;
-}
-
-const MessageList: React.FC<Chat> = ({viewer}) => {
-    const [messages, setMessages] = useState<Message[]>([]);
-    const socket = useSocket();
-
-    const handler = ({ type, payload }: MessageAction) => {
-        switch (type) {
-            case "NEW":
-                const newMessageArray = [...messages, payload];
-                return setMessages(newMessageArray);
-
-            default:
-                break;
-        }
-    };
-
-    useEffect(() => {
-        socket.addEventListener("message", e => {
-            try {
-                handler(JSON.parse(e.data));
-            } catch (error) {
-                console.error(error);
-            }
-        });
-    }, [socket, messages]);
-
+const MessageList: React.FC = props => {
+    const { me, channel } = useSession();
+    const messages = useMessageStore()[channel] || [];
     return (
         <ul className="message-list">
             {messages.map(({ message, id }) => (
-                <li className={`${id === viewer ? "mine" : ''}`}>{`${message} from ${id}`}</li>
+                <li key={`${message}-${id}`} className={`${id === me ? "mine" : ""}`}>{`${message} from ${id}`}</li>
             ))}
         </ul>
     );
@@ -61,6 +37,7 @@ const MessageList: React.FC<Chat> = ({viewer}) => {
 
 const SendMessage: React.FC = props => {
     const [message, setMessage] = useState("");
+    const { channel } = useSession();
 
     const socket = useSocket();
 
@@ -78,7 +55,11 @@ const SendMessage: React.FC = props => {
 
     const sendMessage = (message: string) => {
         console.log(`${message} SENT`);
-        socket.send(`/all ${message}`);
+        if (channel === "all") {
+            socket.send(`/all ${message}`);
+        } else {
+            socket.send(`/to ${channel} ${message}`);
+        }
 
         setMessage("");
     };
