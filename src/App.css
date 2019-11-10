@@ -6,6 +6,23 @@
 }
 
 .container {
+  display: flex;
   flex: 1;
   border: 1px solid black;
+}
+
+.message-list {
+  border: 1px solid red;
+}
+
+.chat {
+  align-self: flex-end;
+}
+
+.send-message{
+  display: flex;
+}
+
+.send-message-input{
+  flex: 1;
 }

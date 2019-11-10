@@ -1,16 +1,17 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useRef, useMemo } from "react";
 
-const SocketContext = React.createContext(new WebSocket("ws://localhost:3000/ws/"));
+const SocketContext = React.createContext({});
 
 interface Socket {
-    url?: string;
+    socket: WebSocket;
 }
 
-const Socket: React.FC<Socket> = ({ children, url = "ws://localhost:3000/ws/" }) => {
-    const socket = new WebSocket(url);
-
+const Socket: React.FC<Socket> = ({ socket, children }) => {
     useEffect(() => {
         socket.onopen = () => console.log("Socket connected");
+
+        socket.addEventListener("message", (e) => console.log("[MESSAGE]: ", e.data));
+        
     }, [socket]);
 
     return <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>;
@@ -18,7 +19,7 @@ const Socket: React.FC<Socket> = ({ children, url = "ws://localhost:3000/ws/" })
 
 export const useSocket = () => {
     const socket = useContext(SocketContext);
-    return socket;
+    return socket as WebSocket;
 };
 
 export default Socket;

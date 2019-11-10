@@ -8,10 +8,10 @@ const initialState = {
 const reducer = (state = initialState, action: any) => {
     switch (action.type) {
         case "WELCOME":
-            return { ...state, list: action.payload };
+            return { ...state, list: action.payload.clients };
 
         case "ADD": {
-            return { ...state, list: [...state.list, action.payload] };
+            return { ...state, list: [...state.list, action.payload.data] };
         }
 
         case "DEL": {
@@ -28,8 +28,9 @@ const reducer = (state = initialState, action: any) => {
 const ClientList: React.FC = props => {
     const [state, dispatch] = useReducer(reducer, initialState);
     const socket = useSocket();
-
+    
     const handler = (event: any) => {
+        
         try {
             dispatch(JSON.parse(event.data));
         } catch (error) {
@@ -38,7 +39,7 @@ const ClientList: React.FC = props => {
         }
     };
     useEffect(() => {
-        socket.onmessage = handler;
+        socket.addEventListener("message", handler);
 
     }, [socket]);
 
