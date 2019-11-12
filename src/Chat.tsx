@@ -130,17 +130,27 @@ const SendMessage: React.FC = props => {
     const sendMessage = (message: string) => {
         console.log(`${message} SENT`);
 
-        if(message.startsWith("/name")){
-            const [command, name] = message.split("name")
+        if (message.startsWith("/name")) {
+            const [command, name] = message.split("name");
+            localStorage.setItem("name", name.trim());
             socket.send(`/name ${name.trim()}`);
+            setMessage("");
+
+            return;
         }
         if (channel === "all") {
             socket.send(`/all ${message}`);
+            setMessage("");
+
+            return;
+            
         } else {
             socket.send(`/to ${channel} ${message}`);
+            setMessage("");
+
+            return;
         }
 
-        setMessage("");
     };
 
     return (

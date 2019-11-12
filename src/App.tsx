@@ -6,7 +6,8 @@ import Session from "./Session";
 const url = "ws://localhost:3000/ws/";
 
 function App() {
-    const socket = new WebSocket(url);
+    const name = window.localStorage.getItem('name') || ''
+    const socket = new WebSocket(name.length > 0 ? `${url}${name}` : url);
     return (
         <Socket socket={socket}>
             <Session>
