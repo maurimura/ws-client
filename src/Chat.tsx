@@ -129,6 +129,11 @@ const SendMessage: React.FC = props => {
 
     const sendMessage = (message: string) => {
         console.log(`${message} SENT`);
+
+        if(message.startsWith("/name")){
+            const [command, name] = message.split("name")
+            socket.send(`/name ${name.trim()}`);
+        }
         if (channel === "all") {
             socket.send(`/all ${message}`);
         } else {

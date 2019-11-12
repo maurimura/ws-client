@@ -5,7 +5,9 @@ import { useSession } from "./Session";
 
 import "./App.scss";
 
-const initialState = {
+type Client = {id: string, name: string}
+
+const initialState: {list: Client[]} = {
     list: [],
 };
 
@@ -19,8 +21,15 @@ const reducer = (state = initialState, action: any) => {
         }
 
         case "DEL": {
-            const filteredList = state.list.filter(client => client !== action.payload);
+            const filteredList = state.list.filter((client: Client) => client.id !== action.payload);
             return { ...state, list: filteredList };
+        }
+
+        case "CHANGE_NAME": {
+            const newNameIndex = state.list.findIndex((client: Client) => client.id !== action.payload);
+            const list = [...state.list]
+            list[newNameIndex] = {...state.list[newNameIndex], name: action.payload.name}
+            return { ...state, list };
         }
 
         default:
@@ -42,14 +51,14 @@ const ClientList: React.FC = props => {
         setChannel((curretnClient: string) => (newClient === curretnClient ? "all" : newClient));
     };
 
-    const getMsgCountByClient = (client: string) => {
-        return message[client] ? message[client].length : 0;
+    const getMsgCountByClient = (client: {id: string, name: string}) => {
+        return message[client.id] ? message[client.id].length : 0;
     };
 
     return (
         <ul className="w-25 bg-near-black light-gray tc pt4">
             {state.list.length > 0 &&
-                state.list.map((client: string) => {
+                state.list.map((client: {id: string, name: string}) => {
                     const count = getMsgCountByClient(client);
                     return <ClientItem key={`${client}-${count}`} client={client} viewHandler={viewHandler} count={count} />;
                 })}
@@ -57,8 +66,9 @@ const ClientList: React.FC = props => {
     );
 };
 
+
 interface ClientItem {
-    client: string;
+    client: Client;
     viewHandler: (client: string) => void;
     count: number;
 }
@@ -69,14 +79,14 @@ const ClientItem: React.FC<ClientItem> = ({ client, viewHandler, count }) => {
 
     const handleClick = () => {
         setVisited(true);
-        viewHandler(client);
+        viewHandler(client.id);
     };
 
-    const className = count > 0 && client !== channel && !visited ? "b" : "";
+    const className = count > 0 && client.id !== channel && !visited ? "b" : "";
 
     return (
-        <li onClick={handleClick} key={client} className={`${className} client-item`}>
-            {client}
+        <li onClick={handleClick} key={client.id} className={`${className} client-item`}>
+            {client.name}
         </li>
     );
 };
