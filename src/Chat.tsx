@@ -63,29 +63,38 @@ const MessageList: React.FC = props => {
         [[]]
     );
     return (
-        <ul className="flex flex-column h-100 pa2 justify-end">
+        <ul className="flex flex-column h-100 pv3 ph2 justify-end">
             {groupedMessages.map(
                 (messagesByUser, i) =>
                     messagesByUser.length > 0 && (
-                        <li
-                            key={`${messagesByUser[0].id}-${i}`}
-                            className={`${
-                                messagesByUser[0].id === me ? "tr " : ""
-                            }`}
-                        >
-                            <span>{messagesByUser[0].id}</span>
-                            <ul>
-                                {messagesByUser.map(({ message, id }, i) => (
-                                    <li
-                                        key={i}
-                                        className={`${id === me ? "tr " : ""}`}
-                                    >{`${message}`}</li>
-                                ))}
-                            </ul>
-                        </li>
+                        <MessageGroup
+                            messagesByUser={messagesByUser}
+                            idGroup={i}
+                        />
                     )
             )}
         </ul>
+    );
+};
+
+interface MessageGroup {
+    messagesByUser: Pick<Message, "id" | "message">[];
+    idGroup: number;
+}
+
+const MessageGroup: React.FC<MessageGroup> = ({ messagesByUser, idGroup }) => {
+    const id = messagesByUser[0].id;
+    return (
+        <li key={`${id}-${idGroup}`}>
+            <ul>
+                {messagesByUser.map(({ message, id }, i) => (
+                    <li key={i} className="pv1">
+                        {i === 0 && <p className="b">{id}</p>}
+                        <span className="pl3">{message}</span>
+                    </li>
+                ))}
+            </ul>
+        </li>
     );
 };
 
