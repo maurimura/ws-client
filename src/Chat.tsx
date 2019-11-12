@@ -10,7 +10,7 @@ interface MessagesStore {
 
 const Chat: React.FC = props => {
     return (
-        <div className="chat">
+        <div className="flex flex-column w-75 near-black bg-light-gray">
             <Header />
             <MessageList />
             <SendMessage />
@@ -27,11 +27,64 @@ interface Message {
 const MessageList: React.FC = props => {
     const { me, channel } = useSession();
     const messages = useMessageStore()[channel] || [];
+    console.log(messages);
+
+    const groupedMessages: Pick<
+        Message,
+        "id" | "message"
+    >[][] = messages.reduce(
+        (acc: Pick<Message, "id" | "message">[][], curr) => {
+            // Empty list
+            if (acc[0].length === 0) {
+                const ret = [[curr]];
+                return ret;
+            }
+
+            // If any group, check the last one id and compare with the curr id
+            const lastGroupedIndex = acc.length - 1;
+            if (
+                acc[lastGroupedIndex][
+                    acc[lastGroupedIndex].length
+                        ? acc[lastGroupedIndex].length - 1
+                        : 0
+                ].id === curr.id
+            ) {
+                // If match, append the message to the group
+                const all = acc;
+                all[lastGroupedIndex] = [...acc[lastGroupedIndex], curr];
+
+                return all;
+            } else {
+                // If not match, create a new group
+                const ret = [...acc, [curr]];
+                return ret;
+            }
+        },
+        [[]]
+    );
     return (
-        <ul className="message-list">
-            {messages.map(({ message, id }) => (
-                <li key={`${message}-${id}`} className={`${id === me ? "mine" : ""}`}>{`${message} from ${id}`}</li>
-            ))}
+        <ul className="flex flex-column h-100 pa2 justify-end">
+            {groupedMessages.map(
+                (messagesByUser, i) =>
+                    messagesByUser.length > 0 && (
+                        <li
+                            key={`${messagesByUser[0].id}-${i}`}
+                            className={`${
+                                messagesByUser[0].id === me ? "tr " : ""
+                            }`}
+                        >
+                            <span>{messagesByUser[0].id}</span>
+                            <ul>
+                                {messagesByUser.map(({ message, id }, i) => (
+                                    <li
+                                        key={i}
+                                        className={`${id === me ? "tr " : ""}`}
+                                    >{`${message}`}</li>
+                                ))}
+                            </ul>
+                        </li>
+                    )
+            )}
         </ul>
     );
 };
@@ -39,8 +92,8 @@ const MessageList: React.FC = props => {
 const Header: React.FC = props => {
     const { channel } = useSession();
     return (
-        <header className="chat-header">
-            <h1>{channel}</h1>
+        <header className="shadow-3">
+            <h1 className="pl2">{channel}</h1>
         </header>
     );
 };
@@ -57,7 +110,9 @@ const SendMessage: React.FC = props => {
         return;
     };
 
-    const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const handleClick = (
+        e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    ) => {
         e.preventDefault();
         sendMessage(message);
         return;
@@ -75,9 +130,13 @@ const SendMessage: React.FC = props => {
     };
 
     return (
-        <form className="send-message" onSubmit={onSubmit}>
-            <input className="send-message-input" value={message} onChange={e => setMessage(e.target.value)} placeholder="Insert text" />
-            <button onClick={handleClick}>Send</button>
+        <form className="flex pa2 " onSubmit={onSubmit}>
+            <input
+                className="w-100 near-black ba b--near-black br0 ph1 pv2 bg-transparent placeholder"
+                value={message}
+                onChange={e => setMessage(e.target.value)}
+                placeholder="Insert text"
+            />
         </form>
     );
 };

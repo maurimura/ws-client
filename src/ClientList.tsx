@@ -47,7 +47,7 @@ const ClientList: React.FC = props => {
     };
 
     return (
-        <ul className="client-list">
+        <ul className="w-25 bg-near-black light-gray tc pt4">
             {state.list.length > 0 &&
                 state.list.map((client: string) => {
                     const count = getMsgCountByClient(client);
@@ -72,7 +72,7 @@ const ClientItem: React.FC<ClientItem> = ({ client, viewHandler, count }) => {
         viewHandler(client);
     };
 
-    const className = count > 0 && client !== channel && !visited ? "bold" : "";
+    const className = count > 0 && client !== channel && !visited ? "b" : "";
 
     return (
         <li onClick={handleClick} key={client} className={`${className} client-item`}>

@@ -21,7 +21,7 @@ const Container: React.FC = props => {
     useSocket(handler);
 
     return (
-            <section className="container">
+            <section className="flex h-100 w-100">
                 <MessagesStore>
                     <ClientList />
                     <Chat />
