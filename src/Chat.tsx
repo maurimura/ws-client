@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./App.scss";
 import { useSocket } from "./Socket";
 import { useMessageStore } from "./MessageStore";
+import { useClients } from "./ClientsStore";
 import { useSession } from "./Session";
 
 interface MessagesStore {
@@ -25,7 +26,7 @@ interface Message {
 }
 
 const MessageList: React.FC = props => {
-    const { me, channel } = useSession();
+    const { channel } = useSession();
     const messages = useMessageStore()[channel] || [];
     console.log(messages);
 
@@ -83,13 +84,19 @@ interface MessageGroup {
 }
 
 const MessageGroup: React.FC<MessageGroup> = ({ messagesByUser, idGroup }) => {
+    const { me } = useSession();
+
     const id = messagesByUser[0].id;
+    const clients = useClients()
+    const currentClient = clients.find(client => client.id === id )
+    const name = currentClient ? currentClient.name : me.name
+   
     return (
         <li key={`${id}-${idGroup}`}>
             <ul>
                 {messagesByUser.map(({ message, id }, i) => (
                     <li key={i} className="pv1">
-                        {i === 0 && <p className="b">{id}</p>}
+                        {i === 0 && <p className="b">{name}</p>}
                         <span className="pl3">{message}</span>
                     </li>
                 ))}
@@ -100,9 +107,12 @@ const MessageGroup: React.FC<MessageGroup> = ({ messagesByUser, idGroup }) => {
 
 const Header: React.FC = props => {
     const { channel } = useSession();
+    const clients = useClients()
+    const currentClient = clients.find(client => client.id === channel )
+    const name = currentClient ? currentClient.name : channel
     return (
         <header className="shadow-3">
-            <h1 className="pl2">{channel}</h1>
+            <h1 className="pl2">{name}</h1>
         </header>
     );
 };

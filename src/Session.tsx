@@ -1,37 +1,52 @@
 import React, { useState, useContext } from "react";
+import { useSocket } from "./Socket";
 
 interface Session {
-    me: string;
+    me: { id: string; name: string };
     channel: string;
 }
 
-const SessionContext = React.createContext({});
+type Me = {id: string, name: string}
 
+type SessionContext = {me: Me, channel: string, setChannel: (channel: string) => void}
 
-interface Handler {
-    me: string;
-    setMe: React.Dispatch<React.SetStateAction<string>>;
-    channel: string;
-    setChannel: React.Dispatch<React.SetStateAction<string>>;
-}
+const SessionContext = React.createContext<SessionContext>({me : {name: '', id: ''}, channel: '', setChannel: (channel) => {}});
+
+type HandlerArg = { type: any; payload: any };
+
+type Handler = (arg: HandlerArg) => void;
 
 const Session: React.FC = ({ children }) => {
-    const [me, setMe] = useState("");
-    const [channel, setChannel] = useState("all");
+    const [me, setMe] = useState({ id: "", name: "" });
+    const [channel, _setChannel] = useState("all");
 
-    const handlers = {
-        me,
-        setMe,
-        channel,
-        setChannel,
+    const handler: Handler = ({ type, payload }) => {
+        switch (type) {
+            case "WELCOME":
+                return setMe({ id: payload.id, name: payload.name });
+
+            default:
+                break;
+        }
     };
+    useSocket(handler);
 
-    return <SessionContext.Provider value={handlers}>{children}</SessionContext.Provider>;
+    const setChannel = (newChannel: string) => _setChannel(currentChannel => currentChannel === newChannel ? "all" : newChannel)
+
+    const context = {
+        me, channel, setChannel
+    }
+
+    return (
+        <SessionContext.Provider value={context}>
+            {children}
+        </SessionContext.Provider>
+    );
 };
 
 export const useSession = () => {
-    const context = useContext(SessionContext) as Handler
-    return context
-}
+    const context = useContext(SessionContext);
+    return context;
+};
 
-export default Session
+export default Session;

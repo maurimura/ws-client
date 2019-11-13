@@ -6,27 +6,20 @@ import Chat from "./Chat";
 import { useSocket } from "./Socket";
 import MessagesStore, { MessageAction } from "./MessageStore";
 import { useSession } from "./Session";
+import ClientStore from "./ClientsStore";
+
 
 const Container: React.FC = props => {
-    const { setMe } = useSession();
-    const handler = ({ type, payload }: MessageAction) => {
-        switch (type) {
-            case "WELCOME":
-                return setMe(payload.id);
-
-            default:
-                break;
-        }
-    };
-    useSocket(handler);
 
     return (
-            <section className="flex h-100 w-100">
-                <MessagesStore>
+        <section className="flex h-100 w-100">
+            <MessagesStore>
+                <ClientStore>
                     <ClientList />
                     <Chat />
-                </MessagesStore>
-            </section>
+                </ClientStore>
+            </MessagesStore>
+        </section>
     );
 };
 
